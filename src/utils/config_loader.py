@@ -88,19 +88,19 @@ class configLoader:
     def saveFfmpeg(self, path: pathlib.Path):
         self._userConfig["deps"]["ffmpeg"] = path
 
-    def getSessData(self):
+    def getSessData(self) -> str:
         return self._userConfig["bilibili"]["sessdata"]
 
     def saveSessData(self, sessdata: str):
         self._userConfig["bilibili"]["sessdata"] = sessdata
 
-    def getBiliJct(self):
+    def getBiliJct(self) -> str:
         return self._userConfig["bilibili"]["bili_jct"]
 
     def saveBiliJct(self, bili_jct: str):
         self._userConfig["bilibili"]["bili_jct"] = bili_jct
 
-    def getBuvid3(self):
+    def getBuvid3(self) -> str:
         return self._userConfig["bilibili"]["buvid3"]
 
     def saveBuvid3(self, buvid3: str):

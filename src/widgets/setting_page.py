@@ -8,11 +8,15 @@ from PySide6.QtWidgets import (
     QPushButton,
     QComboBox
 )
-# from utils import config_loader
+from PySide6.QtGui import QIcon
+import qasync
+from utils import config_loader
 
 class settingPage(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+
+        self.setWindowIcon(QIcon(str(config_loader.userConf.getDefaultIco())))
         
         self._init_ui()
 
@@ -23,7 +27,7 @@ class settingPage(QWidget):
         assetsBlock = QGroupBox("看板娘——可以是图片或者GIF~", self)
         assetsBlockLayout = QVBoxLayout(assetsBlock)
 
-        self._userAssetPath = QLineEdit("", placeholderText="待选择...", parent=assetsBlock)
+        self._userAssetPath = QLineEdit(config_loader.userConf.getImage(), placeholderText="待选择...", parent=assetsBlock)
         self._userAssetPath.setEnabled(False)
         userAssetBtn = QPushButton("选择看板娘", assetsBlock)
 
@@ -37,7 +41,7 @@ class settingPage(QWidget):
         depsBlock = QGroupBox("ffmpeg可执行文件路径", self)
         depsBlockLayout = QVBoxLayout(depsBlock)
 
-        self._ffmpegPath = QLineEdit("", placeholderText="待选择...", parent=depsBlock)
+        self._ffmpegPath = QLineEdit(config_loader.userConf.getFfmpeg(), placeholderText="待选择...", parent=depsBlock)
         self._ffmpegPath.setEnabled(False)
         ffmpegBtn = QPushButton("选择Ffmpeg", depsBlock)
 
@@ -52,7 +56,7 @@ class settingPage(QWidget):
         biliBlockLayout = QVBoxLayout(biliBlock)
 
         sessDataInfo = QLabel("SESSDATA: ", biliBlock)
-        self._sessDataEdit = QLineEdit("", placeholderText="从浏览器获取的SESSDATA...", parent=biliBlock)
+        self._sessDataEdit = QLineEdit(config_loader.userConf.getSessData(), placeholderText="从浏览器获取的SESSDATA...", parent=biliBlock)
 
         sessDataLayout = QHBoxLayout()
         sessDataLayout.addWidget(sessDataInfo)
@@ -60,14 +64,14 @@ class settingPage(QWidget):
 
 
         biliJctInfo = QLabel("bili_jct: ", biliBlock)
-        self._biliJctEdit = QLineEdit("", placeholderText="从浏览器获取的bili_jct...", parent=biliBlock)
+        self._biliJctEdit = QLineEdit(config_loader.userConf.getBiliJct(), placeholderText="从浏览器获取的bili_jct...", parent=biliBlock)
 
         biliJctLayout = QHBoxLayout()
         biliJctLayout.addWidget(biliJctInfo)
         biliJctLayout.addWidget(self._biliJctEdit)
 
         buvid3Info = QLabel("buvid3: ", biliBlock)
-        self._buvid3Edit = QLineEdit("", placeholderText="从浏览器获取的buvid3...", parent=biliBlock)
+        self._buvid3Edit = QLineEdit(config_loader.userConf.getBuvid3(), placeholderText="从浏览器获取的buvid3...", parent=biliBlock)
 
         buvid3Layout = QHBoxLayout()
         buvid3Layout.addWidget(buvid3Info)
@@ -82,7 +86,7 @@ class settingPage(QWidget):
         biliveBlock = QGroupBox("直播间配置", self)
         biliveBlockLayout = QVBoxLayout(biliveBlock)
 
-        self._liveRoomId = QLineEdit("", placeholderText="8位数直播间号...", parent=biliveBlock)
+        self._liveRoomId = QLineEdit(str(config_loader.userConf.getLiveRoom()), placeholderText="8位数直播间号...", parent=biliveBlock)
 
         biliveBlockLayout.addWidget(self._liveRoomId)
 
@@ -91,7 +95,7 @@ class settingPage(QWidget):
         biliTtsBlockLayout = QVBoxLayout(biliTtsBlock)
 
         apiServerInfo = QLabel("api_v2地址: ", biliTtsBlock)
-        self._apiServerEdit = QLineEdit("", biliTtsBlock, placeholderText=r"示例: http://127.0.0.1/9880")
+        self._apiServerEdit = QLineEdit(config_loader.userConf.getSovitsApiServer(), biliTtsBlock, placeholderText=r"示例: http://127.0.0.1/9880")
 
         apiServerV2Layout = QHBoxLayout()
         apiServerV2Layout.addWidget(apiServerInfo)
@@ -99,7 +103,7 @@ class settingPage(QWidget):
 
 
         gptModelInfo = QLabel("gpt模型路径: ", biliTtsBlock)
-        self._gptModelEdit = QLineEdit("", biliTtsBlock, placeholderText="运行GPT-SoVITS的服务器上的路径...")
+        self._gptModelEdit = QLineEdit(config_loader.userConf.getGptModel(), biliTtsBlock, placeholderText="运行GPT-SoVITS的服务器上的路径...")
 
         gptModelLayout = QHBoxLayout()
         gptModelLayout.addWidget(gptModelInfo)
@@ -107,14 +111,14 @@ class settingPage(QWidget):
 
 
         sovitsModelInfo = QLabel("sovits模型路径: ", biliTtsBlock)
-        self._sovitsModelEdit = QLineEdit("", biliTtsBlock, placeholderText="运行GPT-SoVITS的服务器上的路径...")
+        self._sovitsModelEdit = QLineEdit(config_loader.userConf.getSovitsModel(), biliTtsBlock, placeholderText="运行GPT-SoVITS的服务器上的路径...")
 
         sovitsModelLayout = QHBoxLayout()
         sovitsModelLayout.addWidget(sovitsModelInfo)
         sovitsModelLayout.addWidget(self._sovitsModelEdit)
 
         refAudioInfo = QLabel("参考语音路径: ", biliTtsBlock)
-        self._refAudioEdit = QLineEdit("", biliTtsBlock, placeholderText="运行GPT-SoVITS的服务器上的路径...")
+        self._refAudioEdit = QLineEdit(config_loader.userConf.getRefAudio(), biliTtsBlock, placeholderText="运行GPT-SoVITS的服务器上的路径...")
 
         refAudioLayout = QHBoxLayout()
         refAudioLayout.addWidget(refAudioInfo)
@@ -122,7 +126,7 @@ class settingPage(QWidget):
 
 
         refTextInfo = QLabel("参考文本内容: ", biliTtsBlock)
-        self._refTextEdit = QLineEdit("", biliTtsBlock, placeholderText="参考语音里面的文本...")
+        self._refTextEdit = QLineEdit(config_loader.userConf.getRefAudioText(), biliTtsBlock, placeholderText="参考语音里面的文本...")
 
         refTextLayout = QHBoxLayout()
         refTextLayout.addWidget(refTextInfo)
@@ -141,6 +145,16 @@ class settingPage(QWidget):
         self._refLangSelecter.addItem("韩语")
         self._refLangSelecter.setItemData(3, "ko")
 
+        match config_loader.userConf.getRefAudioLang():
+            case "zh":
+                self._refLangSelecter.setCurrentIndex(0)
+            case "en":
+                self._refLangSelecter.setCurrentIndex(1)
+            case "ja":
+                self._refLangSelecter.setCurrentIndex(2)
+            case "ko":
+                self._refLangSelecter.setCurrentIndex(3)
+
         refLangLayout = QHBoxLayout()
         refLangLayout.addWidget(refLangInfo)
         refLangLayout.addWidget(self._refLangSelecter)
@@ -153,10 +167,11 @@ class settingPage(QWidget):
         biliTtsBlockLayout.addLayout(refLangLayout)
 
 
-        saveBtn = QPushButton("一键保存", self)
+        self._saveBtn = QPushButton("一键保存", self)
+        self._saveBtn.clicked.connect(self.applySetting)
 
         saveLayout = QHBoxLayout()
-        saveLayout.addWidget(saveBtn)
+        saveLayout.addWidget(self._saveBtn)
 
         mainLayout.addWidget(assetsBlock)
         mainLayout.addWidget(depsBlock)
@@ -165,17 +180,11 @@ class settingPage(QWidget):
         mainLayout.addWidget(biliTtsBlock)
         mainLayout.addLayout(saveLayout)
 
-    def applySetting(self):
+    @qasync.asyncSlot()
+    async def applySetting(self):
+        self._saveBtn.setEnabled(False)
+        self._saveBtn.setText("保存中 - 请勿关闭 - 保存成功自动关闭")
 
-        
-        pass
 
-if __name__ == "__main__":
-    import sys
-    from PySide6.QtWidgets import QApplication
 
-    app = QApplication(sys.argv)
-    app.setStyle("fusion")
-    window = settingPage()
-    window.show()
-    sys.exit(app.exec())
+        self._saveBtn.setEnabled(True)
