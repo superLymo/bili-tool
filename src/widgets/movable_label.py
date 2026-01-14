@@ -1,7 +1,5 @@
 import random
-from PySide6.QtWidgets import (
-    QLabel
-)
+from PySide6.QtWidgets import QLabel
 from PySide6.QtCore import Qt, QPropertyAnimation, QPoint, QEasingCurve
 from PySide6.QtGui import QFont, QColor, QPainter, QPen
 
@@ -32,7 +30,7 @@ class movableLabel(QLabel):
 
         self.adjustSize()
 
-    def activeMotion(self, startPos : QPoint, endPos : QPoint):
+    def activeMotion(self, startPos: QPoint, endPos: QPoint):
         self.move(startPos)
 
         animation = QPropertyAnimation(self, b"pos", self)
@@ -45,7 +43,7 @@ class movableLabel(QLabel):
         animation.setEasingCurve(QEasingCurve.Type.Linear)
 
         animation.finished.connect(self._onMotionFinished)
-        
+
         self.show()
         animation.start()
 

@@ -5,7 +5,7 @@ import aiohttp
 from utils import config_loader
 
 
-def genTtsPostJson(targetText : str, targetLang : str = "zh") -> dict:
+def genTtsPostJson(targetText: str, targetLang: str = "zh") -> dict:
     return {
         "text": targetText,
         "text_lang": targetLang,

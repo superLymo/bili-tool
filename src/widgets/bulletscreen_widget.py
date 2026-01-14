@@ -1,14 +1,11 @@
 import random
-from PySide6.QtWidgets import (
-    QApplication,
-    QWidget
-)
+from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtCore import Qt, QPoint
 from widgets import movable_label
 
 
 class bullscrContainer(QWidget):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super().__init__(parent=parent)
 
         self._containerHeight = 0
@@ -47,4 +44,6 @@ class bullscrContainer(QWidget):
         else:
             fin_y = 20
 
-        damnuLabel.activeMotion(QPoint(self.width(), fin_y), QPoint(-damnuLabel.width(), fin_y))
+        damnuLabel.activeMotion(
+            QPoint(self.width(), fin_y), QPoint(-damnuLabel.width(), fin_y)
+        )

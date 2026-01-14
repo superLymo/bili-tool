@@ -57,7 +57,7 @@ class blivedmHandler(blivedm.BaseHandler):
         if message.source == 2:
             return
 
-        currentLevelName : str = "没上舰"
+        currentLevelName: str = "没上舰"
 
         match message.guard_level:
             case 1:
