@@ -46,18 +46,42 @@ class AnimatedImageWidget(QWidget):
 
         self._rightMenu.setStyleSheet("""
             QMenu#WidgetMenu {
-                padding: 4px 2px;  /* 菜单上下内边距缩小 */
-                border-radius: 6px;  /* 轻量圆角，不增加过多渲染开销 */
+                /* 1. 背景与边框：使用系统调色板，完美适配明/暗模式 */
+                background-color: palette(window);
+                border: 1px solid palette(mid);
+                
+                /* 2. 圆角：适度的4px圆角，既现代又不会触发过多抗锯齿计算 */
+                border-radius: 4px;
+                
+                /* 3. 菜单内边距：给圆角留出空间，防止选项顶格 */
+                padding: 4px;
+                
+                /* 性能提示：避免使用box-shadow或复杂的background-image，这会显著提升首次加载速度 */
             }
+
             QMenu#WidgetMenu::item {
-                padding: 5px 20px;  /* 菜单项内边距缩小 */
-                margin: 0 2px;      /* 菜单项外边距缩小 */
-                border-radius: 6px; /* 新增：菜单项圆角（值可根据需求调整） */
+                /* 4. 选项间距：优化左右内边距
+                Fusion风格默认左侧预留了图标位，导致文字偏右。
+                这里统一缩小内边距，在视觉上平衡左右 */
+                padding: 7px 14px; 
+                margin: 0px;        /* 去除选项间的外边距，使选中块连贯 */
+                
+                /* 5. 轻量圆角：仅3px，减少绘制开销 */
+                border-radius: 3px; 
             }
+
             QMenu#WidgetMenu::item:selected {
-                background-color: palette(highlight);  /* 系统原生高亮背景 */
-                color: palette(highlightedText);       /* 系统原生高亮文字色 */
-                border-radius: 6px; /* 新增：选中态也保留圆角，视觉统一 */
+                /* 6. 选中态：纯色填充，无渐变，最快渲染速度 */
+                background-color: palette(highlight);
+                color: palette(highlightedText);
+                border-radius: 3px;
+            }
+    
+            /* 7. 分隔线优化：让分隔线更精致 */
+            QMenu#WidgetMenu::separator {
+                height: 1px;
+                background: palette(mid);
+                margin: 4px 10px; /* 缩短分隔线长度，增加留白 */
             }
         """)
 
