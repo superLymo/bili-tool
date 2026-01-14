@@ -1,0 +1,23 @@
+[project]
+name = "bili-tool"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiofiles>=25.1.0",
+    "bilibili-api-python>=17.4.1",
+    "blivedm",
+    "nava>=0.8",
+    "pyside6>=6.10.1",
+    "qasync>=0.28.0",
+    "tomli-w>=1.2.0",
+]
+
+
+[[tool.uv.index]]
+name = "aliyun"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+
+[tool.uv.sources]
+blivedm = { git = "https://github.com/xfgryujk/blivedm.git" }
