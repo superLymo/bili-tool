@@ -195,7 +195,9 @@ class settingPage(QWidget):
         #模拟保存操作，明天再实现吧
         await asyncio.sleep(3)
 
-        if True:
+        saveResult = True
+
+        if saveResult:
             self.setStatus("保存状态: 保存成功!", "green")
         else:
             self.setStatus("保存状态: 保存失败~", "#B22222")
