@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QComboBox
 )
 from PySide6.QtGui import QIcon
+import asyncio
 import qasync
 from utils import config_loader
 
@@ -17,6 +18,7 @@ class settingPage(QWidget):
         super().__init__(parent=parent)
 
         self.setWindowIcon(QIcon(str(config_loader.userConf.getDefaultIco())))
+        self.setWindowTitle("配置页面")
         
         self._init_ui()
 
@@ -170,21 +172,32 @@ class settingPage(QWidget):
         self._saveBtn = QPushButton("一键保存", self)
         self._saveBtn.clicked.connect(self.applySetting)
 
-        saveLayout = QHBoxLayout()
-        saveLayout.addWidget(self._saveBtn)
+        self._settingStatus = QLabel("", self)
+        self.setStatus("保存状态: 未保存", "#2563EB")
 
         mainLayout.addWidget(assetsBlock)
         mainLayout.addWidget(depsBlock)
         mainLayout.addWidget(biliBlock)
         mainLayout.addWidget(biliveBlock)
         mainLayout.addWidget(biliTtsBlock)
-        mainLayout.addLayout(saveLayout)
+        mainLayout.addWidget(self._saveBtn)
+        mainLayout.addWidget(self._settingStatus)
+
+    def setStatus(self, text : str, color : str):
+        self._settingStatus.setText(f"{text}")
+        self._settingStatus.setStyleSheet(f"color : {color};")
 
     @qasync.asyncSlot()
     async def applySetting(self):
         self._saveBtn.setEnabled(False)
-        self._saveBtn.setText("保存中 - 请勿关闭 - 保存成功自动关闭")
+        self.setStatus("保存状态: 保存中...", "#2563EB")
 
+        #模拟保存操作，明天再实现吧
+        await asyncio.sleep(3)
 
+        if True:
+            self.setStatus("保存状态: 保存成功!", "green")
+        else:
+            self.setStatus("保存状态: 保存失败~", "#B22222")
 
         self._saveBtn.setEnabled(True)
