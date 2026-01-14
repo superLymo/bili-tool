@@ -73,7 +73,7 @@ class configLoader:
     def getDefaultAnimatedImage(self):
         return self._defaultAnimatedImage
 
-    def getImage(self):
+    def getImage(self) -> str:
         if not pathlib.Path(self._userConfig["assets"]["image"]).exists():
             self.saveImage(str(self.getDefaultAnimatedImage()))
 
@@ -82,7 +82,7 @@ class configLoader:
     def saveImage(self, path: str):
         self._userConfig["assets"]["image"] = path
 
-    def getFfmpeg(self):
+    def getFfmpeg(self) -> str:
         return self._userConfig["deps"]["ffmpeg"]
 
     def saveFfmpeg(self, path: pathlib.Path):

@@ -1,7 +1,7 @@
 from pathlib import Path
 from PySide6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QMenu
-from PySide6.QtGui import QPixmap, QMouseEvent, QCursor, QAction, QIcon, QMovie
-from PySide6.QtCore import Qt, QPoint, QSize
+from PySide6.QtGui import QPixmap, QMouseEvent, QCursor, QAction, QMovie
+from PySide6.QtCore import Qt, QPoint
 
 
 class AnimatedImageWidget(QWidget):
