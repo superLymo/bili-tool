@@ -67,9 +67,15 @@ async def _changeSovitsModel(
 
 
 async def changeSpeaker(
-    sess: aiohttp.ClientSession, gptPath: pathlib.Path, sovitsPath: pathlib.Path
+    sess: aiohttp.ClientSession, gptPath: str, sovitsPath: str
 ) -> bool:
-    changeTasks = [_changeGptModel(sess, gptPath), _changeSovitsModel(sess, sovitsPath)]
+    _gptPath = pathlib.Path(gptPath)
+    _sovitsPath = pathlib.Path(sovitsPath)
+
+    changeTasks = [
+        _changeGptModel(sess, _gptPath),
+        _changeSovitsModel(sess, _sovitsPath),
+    ]
 
     changeResult = await asyncio.gather(*changeTasks)
 

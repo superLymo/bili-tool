@@ -9,12 +9,16 @@ from PySide6.QtWidgets import (
     QComboBox,
 )
 from PySide6.QtGui import QIcon
-import asyncio
+from PySide6.QtCore import Signal
+import pathlib
+import aiohttp
 import qasync
-from utils import config_loader
+from utils import config_loader, sovits_http_helper
 
 
 class settingPage(QWidget):
+    changeCurrentImage = Signal(str)
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
@@ -275,14 +279,59 @@ class settingPage(QWidget):
         self._saveBtn.setEnabled(False)
         self.setStatus("保存状态: 保存中...", "#2563EB")
 
-        # 模拟保存操作，明天再实现吧
-        await asyncio.sleep(3)
+        if not pathlib.Path(self._userAssetPath.text()).exists():
+            self.setStatus("保存状态: 保存失败~看板娘文件不存在~", "#B22222")
+            self._saveBtn.setEnabled(True)
+            
+            return
+        
+        if self._userAssetPath.text() != config_loader.userConf.getImage():
+            config_loader.userConf.saveImage(self._userAssetPath.text())
 
-        saveResult = True
+            self.changeCurrentImage.emit()
 
-        if saveResult:
-            self.setStatus("保存状态: 保存成功!", "green")
-        else:
-            self.setStatus("保存状态: 保存失败~", "#B22222")
+        
+        if not pathlib.Path(self._ffmpegPath.text()).exists():
+            self.setStatus("保存状态: 保存失败~ffmpeg不存在~", "#B22222")
+            self._saveBtn.setEnabled(True)
+            
+            return
 
+        if self._ffmpegPath.text() != config_loader.userConf.getFfmpeg():
+            config_loader.userConf.saveFfmpeg(self._ffmpegPath.text())
+
+        config_loader.userConf.saveSessData(self._sessDataEdit.text()) 
+        config_loader.userConf.saveBiliJct(self._biliJctEdit.text())
+        config_loader.userConf.saveBuvid3(self._buvid3Edit.text())
+            
+        config_loader.userConf.saveLiveRoom(int(self._liveRoomId.text()))
+            
+        config_loader.userConf.setSovitsApiServer(self._apiServerEdit.text())
+
+        gptOkToRequest : bool = self._gptModelEdit.text() != "" and self._gptModelEdit.text() != config_loader.userConf.getGptModel()
+        sovitsOkToRequest : bool = self._sovitsModelEdit.text() != "" and self._sovitsModelEdit.text() != config_loader.userConf.getSovitsModel()
+
+        modelsChangeResult : bool = False
+        if gptOkToRequest or sovitsOkToRequest:
+            async with aiohttp.ClientSession() as sess:
+                modelsChangeResult = await sovits_http_helper.changeSpeaker(sess, self._gptModelEdit.text(), self._sovitsModelEdit.text())
+
+        if gptOkToRequest or sovitsOkToRequest:
+            if modelsChangeResult:
+                config_loader.userConf.setGptModel(self._gptModelEdit.text())
+                config_loader.userConf.setSovitsModel(self._sovitsModelEdit.text())
+            else:
+                self.setStatus("保存状态: 保存失败~GPT-SoVITS模型设置错误~", "#B22222")
+                self._saveBtn.setEnabled(True)
+
+                return
+
+        config_loader.userConf.setRefAudio(self._refAudioEdit.text())
+        config_loader.userConf.setRefAudioText(self._refTextEdit.text())
+        config_loader.userConf.setRefAudioLang(self._refLangSelecter.itemData(self._refLangSelecter.currentIndex()))
+
+        self.setStatus("保存状态: 保存成功!", "green")
         self._saveBtn.setEnabled(True)
+
+    def closeEvent(self, event):
+        config_loader.userConf.dumpUserConfig()

@@ -18,15 +18,15 @@ class configLoader:
         self._defaultAnimatedImage = self._assetsPath / r"smile.gif"
 
         if self._configPath.exists():
-            self._loadUserConfig()
+            self.loadUserConfig()
         else:
             self._genUserConfig()
 
-    def _loadUserConfig(self):
+    def loadUserConfig(self):
         with open(self._configPath, "rb") as f:
             self._userConfig = tomllib.load(f)
 
-    def _dumpUserConfig(self):
+    def dumpUserConfig(self):
         with open(self._configPath, "wb") as f:
             tomli_w.dump(self._userConfig, f)
 
@@ -50,7 +50,7 @@ class configLoader:
             },
         }
 
-        self._dumpUserConfig()
+        self.dumpUserConfig()
 
     def getProjectPath(self):
         return self._projectPath
@@ -85,7 +85,7 @@ class configLoader:
     def getFfmpeg(self) -> str:
         return self._userConfig["deps"]["ffmpeg"]
 
-    def saveFfmpeg(self, path: pathlib.Path):
+    def saveFfmpeg(self, path: str):
         self._userConfig["deps"]["ffmpeg"] = path
 
     def getSessData(self) -> str:

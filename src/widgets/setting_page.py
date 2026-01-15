@@ -9,12 +9,15 @@ from PySide6.QtWidgets import (
     QComboBox,
 )
 from PySide6.QtGui import QIcon
-import asyncio
+from PySide6.QtCore import Signal
+import pathlib
 import qasync
 from utils import config_loader
 
 
 class settingPage(QWidget):
+    changeCurrentImage = Signal(str)
+
     def __init__(self, parent=None):
         super().__init__(parent=parent)
 
@@ -216,6 +219,9 @@ class settingPage(QWidget):
         mainLayout.addWidget(self._saveBtn)
         mainLayout.addWidget(self._settingStatus)
 
+    def closeEvent(self, event):
+        config_loader.userConf.dumpUserConfig()
+
     def setStatus(self, text: str, color: str):
         self._settingStatus.setText(f"{text}")
         self._settingStatus.setStyleSheet(f"color : {color};")
@@ -225,14 +231,7 @@ class settingPage(QWidget):
         self._saveBtn.setEnabled(False)
         self.setStatus("保存状态: 保存中...", "#2563EB")
 
-        # 模拟保存操作，明天再实现吧
-        await asyncio.sleep(3)
+        # todo: save operations
 
-        saveResult = True
-
-        if saveResult:
-            self.setStatus("保存状态: 保存成功!", "green")
-        else:
-            self.setStatus("保存状态: 保存失败~", "#B22222")
-
+        self.setStatus("保存状态: 保存成功!", "green")
         self._saveBtn.setEnabled(True)
