@@ -40,7 +40,10 @@ class bulletscreenObject(QObject):
     @qasync.asyncSlot()
     async def onMsgHere(self, prefix : str, msg: str) -> None:
         try:
-            jsonToPost = sovits_http_helper.genTtsPostJson(msg)
+            finalText = prefix + msg
+            textLang = self.detectLanguages(finalText)
+
+            jsonToPost = sovits_http_helper.genTtsPostJson(finalText, textLang)
 
             async with self._session.post(
                 config_loader.userConf.getSovitsApiServer() + "/tts",
@@ -116,22 +119,46 @@ class bulletscreenObject(QObject):
     def isRunning(self) -> bool :
         return self._session is not None
 
-    def detectLanguages(self, text: str) -> tuple:
-        c = j = k = e = False
+    def detectLanguages(self, text: str) -> str:
+        # 位标志：第0位=中文，第1位=日文，第2位=韩文，第3位=英文
+        flags = 0b0000
         
         for ch in text:
             code = ord(ch)
             
-            if not c and (19968 <= code <= 40959): 
-                c = True
-            elif not j and (12352 <= code <= 12543): 
-                j = True
-            elif not e and ((65 <= code <= 90) or (97 <= code <= 122)):  
-                e = True
-            elif not k and (44032 <= code <= 55203):  
-                k = True
+            # 使用位运算加速
+            if not (flags & 0b0001) and (19968 <= code <= 40959): 
+                flags |= 0b0001  # 设置中文位
+            elif not (flags & 0b0010) and (12352 <= code <= 12543): 
+                flags |= 0b0010  # 设置日文位
+            elif not (flags & 0b1000) and ((65 <= code <= 90) or (97 <= code <= 122)):  
+                flags |= 0b1000  # 设置英文位
+            elif not (flags & 0b0100) and (44032 <= code <= 55203):  
+                flags |= 0b0100  # 设置韩文位
             
-            if c and j and e and k:
+            # 如果所有位都已设置，提前退出
+            if flags == 0b1111:
                 break
         
-        return c, j, e, k
+        # 预定义的查找表：位标志 -> 返回代码
+        RESULT_MAP = {
+            # 纯语言（只有1位为1）
+            0b0001: "all_zh",  # 只有中文
+            0b0010: "all_ja",  # 只有日文
+            0b0100: "all_ko",  # 只有韩文
+            0b1000: "en",      # 只有英文
+            
+            # 中英混合（中文+英文）
+            0b1001: "zh",      # 中文(0001) + 英文(1000) = 1001
+            
+            # 日英混合（日文+英文）
+            0b1010: "ja",      # 日文(0010) + 英文(1000) = 1010
+            
+            # 韩英混合（韩文+英文）
+            0b1100: "ko",      # 韩文(0100) + 英文(1000) = 1100
+            
+            # 默认：其他所有混合情况
+        }
+        
+        # 查找结果（O(1)时间复杂度）
+        return RESULT_MAP.get(flags, "auto")
