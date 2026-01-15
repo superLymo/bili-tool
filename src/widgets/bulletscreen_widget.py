@@ -1,5 +1,4 @@
 import random, platform
-from ctypes import windll, c_int, WINFUNCTYPE
 import win32con, win32gui
 from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtCore import Qt, QPoint
