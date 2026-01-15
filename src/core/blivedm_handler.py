@@ -12,8 +12,6 @@ class blivedmHandler(blivedm.BaseHandler):
     ):
         dmToSend: str = f"{client.room_id}的心跳包"
 
-        # blivedm_signal.bldmEmitter.messageLoaded.emit(dmToSend)
-
         print(dmToSend)
 
         pass
@@ -24,8 +22,6 @@ class blivedmHandler(blivedm.BaseHandler):
         dmToSend: str = f"{message.uname}说: {message.msg}"
 
         blivedm_signal.bldmEmitter.messageLoaded.emit(dmToSend)
-
-        # print(dmToSend)
 
         pass
 
@@ -38,16 +34,12 @@ class blivedmHandler(blivedm.BaseHandler):
 
         blivedm_signal.bldmEmitter.messageLoaded.emit(dmToSend)
 
-        # print(dmToSend)
-
         pass
 
     def _on_gift(self, client: blivedm.BLiveClient, message: webModels.GiftMessage):
         dmToSend: str = f"{message.uname}送出{message.num}个{message.gift_name}！"
 
         blivedm_signal.bldmEmitter.messageLoaded.emit(dmToSend)
-
-        # print(dmToSend)
 
         pass
 
@@ -70,8 +62,6 @@ class blivedmHandler(blivedm.BaseHandler):
         dmToSend: str = f"{message.username}成功上舰！成为了{currentLevelName}！"
 
         blivedm_signal.bldmEmitter.messageLoaded.emit(dmToSend)
-
-        # print(dmToSend)
 
         pass
 

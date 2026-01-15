@@ -52,8 +52,8 @@ class bulletscreenObject(QObject):
                 wavData = await resp.read()
 
                 await self._wavQueue.put(wavMeta(wavData, True))
-        finally:
-            pass
+        except Exception as e:
+            print(f"tts的post请求失败了: {e}")
 
     def wavPlaySync(self, wavData: wavMeta):
         tempDir = config_loader.userConf.getProjectPath() / "temp"
