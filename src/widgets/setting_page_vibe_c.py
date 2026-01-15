@@ -7,6 +7,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
     QPushButton,
     QComboBox,
+    QFileDialog,
 )
 from PySide6.QtGui import QIcon
 from PySide6.QtCore import Signal
@@ -26,6 +27,9 @@ class settingPage(QWidget):
         self.setWindowTitle("配置页面")
 
         self._init_ui()
+
+        self._lastImageSelectDir : str = ""
+        self._lastFfmpegSelectDir : str = ""
 
     def _init_ui(self):
         # ---------- 统一调宽 ----------
@@ -122,6 +126,7 @@ class settingPage(QWidget):
         )
         self._userAssetPath.setEnabled(False)
         userAssetBtn = QPushButton("选择看板娘", assetsBlock)
+        userAssetBtn.clicked.connect(self.onSelectImage)
         userAssetLayout = QHBoxLayout()
         userAssetLayout.addWidget(self._userAssetPath)
         userAssetLayout.addWidget(userAssetBtn)
@@ -137,6 +142,7 @@ class settingPage(QWidget):
         )
         self._ffmpegPath.setEnabled(False)
         ffmpegBtn = QPushButton("选择Ffmpeg", depsBlock)
+        ffmpegBtn.clicked.connect(self.onSelectFfmpeg)
         ffmpegLayout = QHBoxLayout()
         ffmpegLayout.addWidget(self._ffmpegPath)
         ffmpegLayout.addWidget(ffmpegBtn)
@@ -268,6 +274,34 @@ class settingPage(QWidget):
         mainLayout.addWidget(self._settingStatus)
         mainLayout.addStretch()
 
+    def onSelectImage(self):
+        selectImagePath = QFileDialog.getOpenFileName(
+            None,
+            "选择图片或者GIF~",
+            self._lastImageSelectDir,
+            "图片文件 (*.png *.jpg *.gif *.jpeg *.webp)"
+        )
+
+        if selectImagePath[0] == "":
+            return
+        
+        self._userAssetPath.setText(selectImagePath[0])
+        self._lastImageSelectDir = str(pathlib.Path(selectImagePath[0]).parent)
+
+    def onSelectFfmpeg(self):
+        selectFfmpegPath = QFileDialog.getOpenFileName(
+            None,
+            "选择ffmpeg可执行文件~",
+            self._lastFfmpegSelectDir,
+            ""
+        )
+
+        if selectFfmpegPath[0] == "":
+            return
+        
+        self._ffmpegPath.setText(selectFfmpegPath[0])
+        self._lastFfmpegSelectDir = str(pathlib.Path(selectFfmpegPath[0]).parent)
+
     def setStatus(self, text: str, color: str):
         self._settingStatus.setText(text)
         self._settingStatus.setStyleSheet(
@@ -288,7 +322,7 @@ class settingPage(QWidget):
         if self._userAssetPath.text() != config_loader.userConf.getImage():
             config_loader.userConf.saveImage(self._userAssetPath.text())
 
-            self.changeCurrentImage.emit()
+            self.changeCurrentImage.emit(self._userAssetPath.text())
 
         
         if not pathlib.Path(self._ffmpegPath.text()).exists():
