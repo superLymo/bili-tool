@@ -38,7 +38,7 @@ class bulletscreenObject(QObject):
         self.wayPlayAsync()
 
     @qasync.asyncSlot()
-    async def onMsgHere(self, msg: str) -> None:
+    async def onMsgHere(self, prefix : str, msg: str) -> None:
         try:
             jsonToPost = sovits_http_helper.genTtsPostJson(msg)
 
@@ -115,3 +115,23 @@ class bulletscreenObject(QObject):
 
     def isRunning(self) -> bool :
         return self._session is not None
+
+    def detectLanguages(self, text: str) -> tuple:
+        c = j = k = e = False
+        
+        for ch in text:
+            code = ord(ch)
+            
+            if not c and (19968 <= code <= 40959): 
+                c = True
+            elif not j and (12352 <= code <= 12543): 
+                j = True
+            elif not e and ((65 <= code <= 90) or (97 <= code <= 122)):  
+                e = True
+            elif not k and (44032 <= code <= 55203):  
+                k = True
+            
+            if c and j and e and k:
+                break
+        
+        return c, j, e, k

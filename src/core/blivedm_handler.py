@@ -19,11 +19,7 @@ class blivedmHandler(blivedm.BaseHandler):
     def _on_danmaku(
         self, client: blivedm.BLiveClient, message: webModels.DanmakuMessage
     ):
-        dmToSend: str = f"{message.uname}说: {message.msg}"
-
-        blivedm_signal.bldmEmitter.messageLoaded.emit(dmToSend)
-
-        pass
+        blivedm_signal.bldmEmitter.messageLoaded.emit(f"{message.uname}说: ", message.msg)
 
     def _on_super_chat(
         self, client: blivedm.BLiveClient, message: webModels.SuperChatMessage
@@ -32,16 +28,12 @@ class blivedmHandler(blivedm.BaseHandler):
             f"{message.uname}通过{message.price}元醒目留言说: {message.message}"
         )
 
-        blivedm_signal.bldmEmitter.messageLoaded.emit(dmToSend)
-
-        pass
+        blivedm_signal.bldmEmitter.messageLoaded.emit("", dmToSend)
 
     def _on_gift(self, client: blivedm.BLiveClient, message: webModels.GiftMessage):
         dmToSend: str = f"{message.uname}送出{message.num}个{message.gift_name}！"
 
-        blivedm_signal.bldmEmitter.messageLoaded.emit(dmToSend)
-
-        pass
+        blivedm_signal.bldmEmitter.messageLoaded.emit("", dmToSend)
 
     def _on_user_toast_v2(
         self, client: blivedm.BLiveClient, message: webModels.UserToastV2Message
@@ -61,9 +53,7 @@ class blivedmHandler(blivedm.BaseHandler):
 
         dmToSend: str = f"{message.username}成功上舰！成为了{currentLevelName}！"
 
-        blivedm_signal.bldmEmitter.messageLoaded.emit(dmToSend)
-
-        pass
+        blivedm_signal.bldmEmitter.messageLoaded.emit("", dmToSend)
 
     def _on_interact_word_v2(
         self, client: blivedm.BLiveClient, message: webModels.InteractWordV2Message

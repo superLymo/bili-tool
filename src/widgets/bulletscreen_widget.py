@@ -34,7 +34,7 @@ class bullscrContainer(QWidget):
 
         self.setGeometry(0, 0, screen_width, self._containerHeight)
 
-    def addDanmu(self, text):
+    def addDanmu(self, prefix, text):
         damnuLabel = movable_label.movableLabel(text, parent=self)
 
         min_y = 20
