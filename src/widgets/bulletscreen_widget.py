@@ -1,4 +1,6 @@
-import random
+import random, platform
+from ctypes import windll, c_int, WINFUNCTYPE
+import win32con, win32gui
 from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtCore import Qt, QPoint
 from widgets import movable_label
@@ -14,6 +16,12 @@ class bullscrContainer(QWidget):
         self._initWindow()
 
         blivedm_signal.bldmEmitter.messageLoaded.connect(self.addDanmu)
+
+    def setClickThrough(self):
+        hwnd = int(self.winId())
+        ex_style = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
+        ex_style |= win32con.WS_EX_TRANSPARENT   
+        win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, ex_style)
 
     def _initWindow(self):
         self.setWindowFlags(
@@ -50,3 +58,9 @@ class bullscrContainer(QWidget):
         damnuLabel.activeMotion(
             QPoint(self.width(), fin_y), QPoint(-damnuLabel.width(), fin_y)
         )
+
+    def showEvent(self, event):
+        super().showEvent(event)
+
+        if platform.system() == 'Windows':
+            self.setClickThrough()

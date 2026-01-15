@@ -10,6 +10,7 @@ dependencies = [
     "blivedm",
     "nava>=0.8",
     "pyside6>=6.10.1",
+    "pywin32>=311",
     "qasync>=0.28.0",
     "tomli-w>=1.2.0",
 ]
