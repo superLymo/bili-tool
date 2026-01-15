@@ -1,4 +1,5 @@
 import sys, asyncio, pathlib
+from typing import override
 from PySide6.QtWidgets import (
     QApplication,
     QWidget,
@@ -13,7 +14,7 @@ from PySide6.QtWidgets import (
     QFileDialog,
 )
 from PySide6.QtGui import QPixmap, QPalette, QIcon
-from PySide6.QtCore import Qt, QByteArray
+from PySide6.QtCore import Qt, QByteArray, Signal
 from bilibili_api import emoji, Credential
 import aiofiles, aiohttp, qasync
 from utils.config_loader import userConf
@@ -48,6 +49,8 @@ class emoListItem(QWidget):
 
 
 class emoSearchListWidget(QWidget):
+    readyToDestory = Signal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -125,6 +128,9 @@ class emoSearchListWidget(QWidget):
         self.search_button.setEnabled(True)
 
     def on_search_clicked(self):
+        if self.search_edit.text() == "":
+            return
+
         self.list_widget.clear()
         self._emoListItems.clear()
         self.search_button.setEnabled(False)
@@ -142,7 +148,7 @@ class emoSearchListWidget(QWidget):
             self, "选择表情包下载目录", self._saveFolder
         )
 
-        if not selectedFolder:
+        if selectedFolder == "":
             return
 
         self._saveFolder = selectedFolder
@@ -282,3 +288,7 @@ class emoSearchListWidget(QWidget):
         """
 
         self.setStyleSheet(qss)
+
+    @override
+    def closeEvent(self, event):
+        self.readyToDestory.emit()

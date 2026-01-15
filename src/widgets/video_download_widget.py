@@ -10,7 +10,7 @@ from PySide6.QtWidgets import (
     QFrame,
     QFileDialog,
 )
-from PySide6.QtCore import Qt, QSize
+from PySide6.QtCore import Qt, QSize, Signal
 from PySide6.QtGui import QPixmap, QFont, QPalette, QColor, QIcon
 import qasync
 
@@ -20,6 +20,8 @@ from utils import config_loader
 
 
 class vdoDownWidget(QWidget):
+    readyToDestory = Signal()
+
     def __init__(self):
         super().__init__()
         self.setup_ui()
@@ -122,7 +124,7 @@ class vdoDownWidget(QWidget):
     def onSearchButtonClicked(self):
         inputBv = self.edit_search.text()
 
-        if not inputBv:
+        if inputBv == "":
             return
 
         self.setBtnsEnabled(False)
@@ -137,7 +139,7 @@ class vdoDownWidget(QWidget):
             self, "选择视频下载目录", self._currentDownFolder
         )
 
-        if not selectedFolder:
+        if selectedFolder == "":
             self.setBtnsEnabled(True)
 
             return
@@ -151,3 +153,6 @@ class vdoDownWidget(QWidget):
 
         self.setBtnsEnabled(True)
         self.setWindowTitle(f"{self.card.getCurrentBvid()} - 下载完成")
+
+    def closeEvent(self, event):
+        self.readyToDestory.emit()

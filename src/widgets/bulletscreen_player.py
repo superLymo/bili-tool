@@ -112,3 +112,6 @@ class bulletscreenObject(QObject):
         await self._wavQueue.put(wavMeta(None, False))
 
         self._session = None
+
+    def isRunning(self) -> bool :
+        return self._session is not None

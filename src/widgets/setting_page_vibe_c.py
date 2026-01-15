@@ -19,6 +19,7 @@ from utils import config_loader, sovits_http_helper
 
 class settingPage(QWidget):
     changeCurrentImage = Signal(str)
+    readyToDestory = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
@@ -369,3 +370,5 @@ class settingPage(QWidget):
 
     def closeEvent(self, event):
         config_loader.userConf.dumpUserConfig()
+        
+        self.readyToDestory.emit()

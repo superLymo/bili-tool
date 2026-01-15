@@ -113,11 +113,13 @@ class AnimatedImageWidget(QWidget):
 
         self._rightMenu.addSeparator()
 
-        dmPlayerAction = QAction("桌面弹幕", self._rightMenu)
+        dmPlayerAction = QAction("语音弹幕", self._rightMenu)
+        dmPlayerAction.setCheckable(True)
         dmPlayerAction.triggered.connect(self.onDmPlayer)
         self._rightMenu.addAction(dmPlayerAction)
 
-        dmWidgetAction = QAction("语音弹幕", self._rightMenu)
+        dmWidgetAction = QAction("桌面弹幕", self._rightMenu)
+        dmWidgetAction.setCheckable(True)
         dmWidgetAction.triggered.connect(self.onDmWidget)
         self._rightMenu.addAction(dmWidgetAction)
 
@@ -207,19 +209,70 @@ class AnimatedImageWidget(QWidget):
             self.movie.setPaused(False)
 
     def emojiDownload(self):
-        pass
+        if self._emojiSelecter:
+            return
+
+        self._emojiSelecter = emoji_selecter.emoSearchListWidget()
+        self._emojiSelecter.show()
+
+        def _setEmoToNone():
+            self._emojiSelecter = None
+
+        self._emojiSelecter.readyToDestory.connect(_setEmoToNone)
 
     def vdoDownload(self):
-        pass
+        if self._videoDownloadWidget:
+            return
 
-    def onDmPlayer(self):
-        pass
+        self._videoDownloadWidget = video_download_widget.vdoDownWidget()
+        self._videoDownloadWidget.show()
 
-    def onDmWidget(self):
-        pass
+        def _setVdoToNone():
+            self._videoDownloadWidget = None
+        
+        self._videoDownloadWidget.readyToDestory.connect(_setVdoToNone)
+
+    def onDmPlayer(self, checked):
+        if not self._bulletscreenPlayer:
+            self._bulletscreenPlayer = bulletscreen_player.bulletscreenObject(self)
+
+        if checked:
+            if self._bulletscreenPlayer.isRunning():
+                return
+
+            if not self._blivedmWidget:
+                self._blivedmWidget = blivedm_widget.blivedmObject(self)
+
+            self._blivedmWidget.runBlivedm()
+            self._bulletscreenPlayer.runPlayer()
+        else:
+            if not self._bulletscreenPlayer.isRunning():
+                return
+
+            self._bulletscreenPlayer.stopPlayer()
+
+            if self._bulletscreenWidget:
+                return
+
+            self._blivedmWidget.stopBlivedm()
+
+    def onDmWidget(self, checked):
+        if checked:
+            pass
+        else:
+            pass
 
     def openSettingPage(self):
-        pass
+        if self._settingPageWidget:
+            return
+
+        self._settingPageWidget = setting_page_vibe_c.settingPage()
+        self._settingPageWidget.show()
+
+        def _setSetPageToNone():
+            self._settingPageWidget = None
+
+        self._settingPageWidget.readyToDestory.connect(_setSetPageToNone)
 
     # 窗口隐藏事件（兜底：比如用户手动隐藏窗口也暂停GIF）
     def hideEvent(self, event):
