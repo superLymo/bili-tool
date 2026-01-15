@@ -2,6 +2,7 @@ import random
 from PySide6.QtWidgets import QApplication, QWidget
 from PySide6.QtCore import Qt, QPoint
 from widgets import movable_label
+from core import blivedm_signal
 
 
 class bullscrContainer(QWidget):
@@ -11,6 +12,8 @@ class bullscrContainer(QWidget):
         self._containerHeight = 0
 
         self._initWindow()
+
+        blivedm_signal.bldmEmitter.messageLoaded.connect(self.addDanmu)
 
     def _initWindow(self):
         self.setWindowFlags(

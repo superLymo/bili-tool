@@ -258,9 +258,28 @@ class AnimatedImageWidget(QWidget):
 
     def onDmWidget(self, checked):
         if checked:
-            pass
+            if self._bulletscreenWidget:
+                return
+
+            self._bulletscreenWidget = bulletscreen_widget.bullscrContainer()
+            self._bulletscreenWidget.show()
+
+            if not self._blivedmWidget:
+                self._blivedmWidget = blivedm_widget.blivedmObject(self)
+
+            self._blivedmWidget.runBlivedm()
         else:
-            pass
+            if not self._bulletscreenWidget:
+                return
+
+            self._bulletscreenWidget.deleteLater()
+            self._bulletscreenWidget = None
+
+            if self._bulletscreenPlayer and self._bulletscreenPlayer.isRunning():
+                return
+
+            self._blivedmWidget.stopBlivedm()
+            
 
     def openSettingPage(self):
         if self._settingPageWidget:
