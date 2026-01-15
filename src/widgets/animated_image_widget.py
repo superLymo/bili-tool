@@ -2,7 +2,14 @@ from pathlib import Path
 from PySide6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QMenu
 from PySide6.QtGui import QPixmap, QMouseEvent, QCursor, QAction, QMovie
 from PySide6.QtCore import Qt, QPoint
-
+from widgets import (
+    emoji_selecter, 
+    video_download_widget,
+    blivedm_widget,
+    bulletscreen_player,
+    bulletscreen_widget,
+    setting_page_vibe_c, 
+)
 
 class AnimatedImageWidget(QWidget):
     def __init__(self, image_path: str, parent=None):
@@ -16,8 +23,6 @@ class AnimatedImageWidget(QWidget):
         self.imageLabel = QLabel()
         self.imageLabel.setAlignment(Qt.AlignCenter)
         self.imageLabel.setAttribute(Qt.WA_TranslucentBackground)
-        # 初始设置最小尺寸，避免负尺寸报错
-        # self.image_label.setMinimumSize(QSize(1, 1))
 
         self.movie = None  # 存储 GIF 播放对象
         self.isGif = False  # 标记是否是 GIF
@@ -39,6 +44,13 @@ class AnimatedImageWidget(QWidget):
         self._offsetPos = QPoint()
 
         self.adjustSize()
+
+        self._emojiSelecter : emoji_selecter.emoSearchListWidget | None = None
+        self._videoDownloadWidget : video_download_widget.vdoDownWidget | None = None
+        self._blivedmWidget : blivedm_widget.blivedmObject | None = None
+        self._bulletscreenPlayer : bulletscreen_player.bulletscreenObject | None = None
+        self._bulletscreenWidget : bulletscreen_widget.bullscrContainer | None = None
+        self._settingPageWidget : setting_page_vibe_c.settingPage | None = None
 
     def _initRightMenu(self):
         self._rightMenu = QMenu(self)
@@ -91,17 +103,43 @@ class AnimatedImageWidget(QWidget):
 
         self._rightMenu.addSeparator()
 
+        emojiDownloadAction = QAction("下载表情包", self._rightMenu)
+        emojiDownloadAction.triggered.connect(self.emojiDownload)
+        self._rightMenu.addAction(emojiDownloadAction)
+
+        vdoDownloadAction = QAction("下载BV视频", self._rightMenu)
+        vdoDownloadAction.triggered.connect(self.vdoDownload)
+        self._rightMenu.addAction(vdoDownloadAction)
+
+        self._rightMenu.addSeparator()
+
+        dmPlayerAction = QAction("桌面弹幕", self._rightMenu)
+        dmPlayerAction.triggered.connect(self.onDmPlayer)
+        self._rightMenu.addAction(dmPlayerAction)
+
+        dmWidgetAction = QAction("语音弹幕", self._rightMenu)
+        dmWidgetAction.triggered.connect(self.onDmWidget)
+        self._rightMenu.addAction(dmWidgetAction)
+
+        self._rightMenu.addSeparator()
+
+        settingPageAcion = QAction("设置页面", self._rightMenu)
+        settingPageAcion.triggered.connect(self.openSettingPage)
+        self._rightMenu.addAction(settingPageAcion)
+
+        self._rightMenu.addSeparator()
+
         self.quitAppAction = QAction("退出应用", self)
         self.quitAppAction.triggered.connect(lambda: QApplication.quit())
         self._rightMenu.addAction(self.quitAppAction)
 
     # ========== 修改2：优化load_image函数，支持动态切换图片/GIF ==========
-    def _loadAnimatedImage(self, image_path: str) -> bool:
+    def _loadAnimatedImage(self, image_path: str):
         """加载/切换图片/GIF（优化后支持动态切换，避免控件异常）"""
         if not Path(image_path).exists():
             print(f"错误：图片路径 {image_path} 不存在")
             self.isGif = False
-            return False
+            return
 
         # 1. 清理原有资源（关键：切换前释放旧的图片/GIF资源）
         if self.isGif and self.movie:
@@ -119,8 +157,6 @@ class AnimatedImageWidget(QWidget):
             self.isGif = True
             # 创建 QMovie 加载 GIF
             self.movie = QMovie(image_path)
-            # 设置无限循环（-1 = 无限循环）
-            self.movie.loopCount = -1
 
             # 监听 GIF 帧加载完成信号，再设置尺寸
             self.movie.frameChanged.connect(self._on_gif_frame_loaded)
@@ -135,7 +171,7 @@ class AnimatedImageWidget(QWidget):
             pixmap = QPixmap(image_path)
             if pixmap.isNull():
                 print(f"错误：无法加载图片 {image_path}")
-                return False
+                return
             self.imageLabel.setPixmap(pixmap)
             # 静态图直接设置尺寸
             self.imageLabel.setFixedSize(pixmap.size())
@@ -157,20 +193,33 @@ class AnimatedImageWidget(QWidget):
             self.movie.frameChanged.disconnect(self._on_gif_frame_loaded)
 
     def hideToTray(self):
-        """隐藏到托盘（自动暂停GIF，优化性能）"""
         self.setVisible(False)
         # 仅 GIF 时暂停播放
         if self.isGif and self.movie and self.movie.state() == QMovie.Running:
             self.movie.setPaused(True)
 
     def showFromTray(self):
-        """从托盘显示（自动恢复GIF播放）"""
         self.setVisible(True)
         self.raise_()
         self.activateWindow()
         # 仅 GIF 时恢复播放
         if self.isGif and self.movie and self.movie.state() == QMovie.Paused:
             self.movie.setPaused(False)
+
+    def emojiDownload(self):
+        pass
+
+    def vdoDownload(self):
+        pass
+
+    def onDmPlayer(self):
+        pass
+
+    def onDmWidget(self):
+        pass
+
+    def openSettingPage(self):
+        pass
 
     # 窗口隐藏事件（兜底：比如用户手动隐藏窗口也暂停GIF）
     def hideEvent(self, event):
