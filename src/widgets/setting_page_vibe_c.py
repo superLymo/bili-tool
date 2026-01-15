@@ -109,7 +109,7 @@ class settingPage(QWidget):
         mainLayout.setContentsMargins(24, 24, 24, 24)
 
         # ---- assetsBlock ----
-        assetsBlock = QGroupBox("看板娘——可以是图片或者GIF~", self)
+        assetsBlock = QGroupBox("看板娘——可以是图片或者GIF~有默认的~", self)
         assetsBlockLayout = QVBoxLayout(assetsBlock)
         self._userAssetPath = QLineEdit(
             config_loader.userConf.getImage(),
@@ -124,7 +124,7 @@ class settingPage(QWidget):
         assetsBlockLayout.addLayout(userAssetLayout)
 
         # ---- depsBlock ----
-        depsBlock = QGroupBox("ffmpeg可执行文件路径", self)
+        depsBlock = QGroupBox("ffmpeg可执行文件路径——若需下载视频则填~", self)
         depsBlockLayout = QVBoxLayout(depsBlock)
         self._ffmpegPath = QLineEdit(
             config_loader.userConf.getFfmpeg(),
@@ -139,7 +139,7 @@ class settingPage(QWidget):
         depsBlockLayout.addLayout(ffmpegLayout)
 
         # ---- biliBlock ----
-        biliBlock = QGroupBox("b站cookie配置", self)
+        biliBlock = QGroupBox("b站cookie配置——请去浏览器中获得~必填~", self)
         biliBlockLayout = QVBoxLayout(biliBlock)
         sessDataInfo = QLabel("SESSDATA: ", biliBlock)
         self._sessDataEdit = QLineEdit(
@@ -173,7 +173,7 @@ class settingPage(QWidget):
         biliBlockLayout.addLayout(buvid3Layout)
 
         # ---- biliveBlock ----
-        biliveBlock = QGroupBox("直播间配置", self)
+        biliveBlock = QGroupBox("直播间配置——若需监听直播弹幕则填~", self)
         biliveBlockLayout = QVBoxLayout(biliveBlock)
         self._liveRoomId = QLineEdit(
             str(config_loader.userConf.getLiveRoom()),
@@ -183,7 +183,7 @@ class settingPage(QWidget):
         biliveBlockLayout.addWidget(self._liveRoomId)
 
         # ---- biliTtsBlock ----
-        biliTtsBlock = QGroupBox("GPT-SoVITS配置", self)
+        biliTtsBlock = QGroupBox("GPT-SoVITS配置——若需直播弹幕语音化则填~", self)
         biliTtsBlockLayout = QVBoxLayout(biliTtsBlock)
         apiServerInfo = QLabel("api_v2地址: ", biliTtsBlock)
         self._apiServerEdit = QLineEdit(
