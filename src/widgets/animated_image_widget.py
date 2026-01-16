@@ -136,7 +136,12 @@ class AnimatedImageWidget(QWidget):
         self.quitAppAction.triggered.connect(lambda: QApplication.quit())
         self._rightMenu.addAction(self.quitAppAction)
 
-    # ========== 修改2：优化load_image函数，支持动态切换图片/GIF ==========
+    def moveToCenter(self):
+        self.move(
+            self.screen().availableGeometry().center() - 
+            self.rect().center()
+        )
+
     def _loadAnimatedImage(self, image_path: str):
         """加载/切换图片/GIF（优化后支持动态切换，避免控件异常）"""
         if not Path(image_path).exists():
@@ -180,6 +185,8 @@ class AnimatedImageWidget(QWidget):
             self.imageLabel.setFixedSize(pixmap.size())
             # 同步设置窗口尺寸
             self.setFixedSize(pixmap.size())
+
+        self.moveToCenter()
 
     def _on_gif_frame_loaded(self):
         """GIF 帧加载完成后设置有效尺寸"""
