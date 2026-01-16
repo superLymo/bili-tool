@@ -107,6 +107,9 @@ class configLoader:
         self._userConfig["bilibili"]["buvid3"] = buvid3
 
     def getLiveRoom(self):
+        if self._userConfig["bilibili"]["live"]["room"] == "":
+            return 0
+
         return int(self._userConfig["bilibili"]["live"]["room"])
 
     def saveLiveRoom(self, roomId: int) -> None:
