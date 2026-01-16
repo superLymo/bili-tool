@@ -11,7 +11,7 @@ from utils import config_loader
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    app.setApplicationName("bili_tool")
+    app.setApplicationName("哔哩哔哩小助手")
     app.setStyle("Fusion")
     app.setWindowIcon(QIcon(str(config_loader.userConf.getDefaultIco())))
 

@@ -56,7 +56,7 @@ class biliTrayRegister:
         self._trayIcon = QSystemTrayIcon(parent)
 
         self._trayIcon.setIcon(QIcon(str(config_loader.userConf.getDefaultIco())))
-        self._trayIcon.setToolTip("透明GIF/图片显示工具（性能优化版）")
+        self._trayIcon.setToolTip("哔哩哔哩小助手")
 
     def _createTrayMenu(self, parent: QWidget):
         self._trayMenu = QMenu(parent)
