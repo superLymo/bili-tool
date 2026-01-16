@@ -94,6 +94,11 @@ async def downloadVideos(vido: bapi.video.Video, folder: pathlib.Path) -> None:
 
 
 async def downloadVideosV2(vido: bapi.video.Video, folder: pathlib.Path) -> None:
+    if conf.userConf.getFfmpeg() == "" or not pathlib.Path(conf.userConf.getFfmpeg()).exists():
+        print("没找到ffmpeg~")
+
+        return
+
     if not folder.exists():
         folder.mkdir(parents=True, exist_ok=True)
 
