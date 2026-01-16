@@ -146,6 +146,9 @@ class configLoader:
         self._userConfig["sovits"]["ref_audio_text"] = newText
 
     def getRefAudioLang(self) -> str:
+        if self._userConfig["sovits"]["ref_audio_lang"] == "":
+            return "zh"
+
         return self._userConfig["sovits"]["ref_audio_lang"]
 
     def setRefAudioLang(self, newLang: str):
