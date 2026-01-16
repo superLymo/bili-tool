@@ -18,7 +18,7 @@ if __name__ == "__main__":
     appCloseEvent = asyncio.Event()
     app.aboutToQuit.connect(appCloseEvent.set)
 
-    widget = AnimatedImageWidget(str(config_loader.userConf.getImage()))
+    widget = AnimatedImageWidget()
 
     sty = biliTrayRegister(app, widget, widget.showFromTray, app.quit)
 

@@ -2,6 +2,7 @@ from pathlib import Path
 from PySide6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QMenu
 from PySide6.QtGui import QPixmap, QMouseEvent, QCursor, QAction, QMovie
 from PySide6.QtCore import Qt, QPoint
+from utils import config_loader
 from widgets import (
     emoji_selecter, 
     video_download_widget,
@@ -12,7 +13,7 @@ from widgets import (
 )
 
 class AnimatedImageWidget(QWidget):
-    def __init__(self, image_path: str, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         # 窗口基础配置
@@ -28,7 +29,7 @@ class AnimatedImageWidget(QWidget):
         self.isGif = False  # 标记是否是 GIF
 
         # 加载图片/GIF
-        self._loadAnimatedImage(image_path)
+        self._loadAnimatedImage(config_loader.userConf.getImage())
 
         # 布局
         layout = QVBoxLayout(self)
@@ -290,6 +291,7 @@ class AnimatedImageWidget(QWidget):
 
         def _setSetPageToNone():
             self._settingPageWidget = None
+            self._loadAnimatedImage(config_loader.userConf.getImage())
 
         self._settingPageWidget.readyToDestory.connect(_setSetPageToNone)
 
