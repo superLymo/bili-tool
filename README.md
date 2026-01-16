@@ -10,6 +10,9 @@
 
 ## 食用方式
 1. 克隆项目
+    ```
+    git clone https://github.com/superLymo/bili-tool.git
+    ```
 2. 安装依赖，强烈建议使用uv
     ```
     uv sync
